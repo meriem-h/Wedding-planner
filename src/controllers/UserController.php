@@ -1,5 +1,5 @@
 <?php
-class UserController {
+class UserController  extends Controller {
     private $user;
 
     public function __construct($db) {
@@ -7,9 +7,29 @@ class UserController {
     }
 
     // Récupérer tous les users
-    public function index() {
-        return $this->user->getAll();
+    public function index()
+    {
+        $user = $this->user->getAll();
+
+        // Appelle la vue et envoie $user
+        $this->render('user/index', ['user' => $user]);
     }
+
+    
+    public function test()
+    {
+        $this->render('user/test');
+    }
+
+
+
+
+
+
+
+
+
+
 
     // Récupérer un user par ID
     public function show($id) {

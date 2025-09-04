@@ -1,27 +1,43 @@
 <?php
+// Inclure autoload et configuration
 require_once __DIR__ . '/../app.php';
 
-$user = new User($db);
+// Récupérer l'URL demandée
+$uri = $_SERVER['REQUEST_URI']; // ex: /user/index
+$route = trim($uri, '/');
 
+// ⚡ Redirection si la route se termine par /index
+if (substr($route, -5) === 'index') { // 'index' = 5 lettres
+    $newRoute = substr($route, 0, -5);
+    $newRoute = rtrim($newRoute, '/'); // enlever slash final
+    header("Location: /$newRoute", true, 301);
+    exit;
+}
 
-$singleUser = $user->getById(1);
-echo "<h2>User ID 1:</h2>";
-echo "<pre>";
-print_r($singleUser);
-echo "</pre>";
+// Séparer controller/method/params
+$parts = explode('/', $route);
 
+// Controller : premier segment ou 'home' par défaut
+$controllerName = ucfirst($parts[0] ?? 'home') . 'Controller';
 
+// Méthode : deuxième segment ou 'index' par défaut
+$method = $parts[1] ?? 'index';
 
-$emailUser = $user->findByEmail("meriem@test.com");
-echo "<h2>User email : meriem@test.com</h2>";
-echo "<pre>";
-print_r($emailUser);
-echo "</pre>";
+// Paramètres : reste des segments
+$params = array_slice($parts, 2);
 
+// Vérifier si le controller existe
+if (class_exists($controllerName)) {
+    $controller = new $controllerName($db);
 
-
-$auth = $user->authenticate("meriem@test.com", "123456");
-echo "<h2>Authentification:</h2>";
-echo "<pre>";
-print_r($auth);
-echo "</pre>";
+    if (method_exists($controller, $method)) {
+        // Appel dynamique
+        call_user_func_array([$controller, $method], $params);
+    } else {
+        http_response_code(404);
+        echo "Méthode '$method' introuvable dans $controllerName.";
+    }
+} else {
+    http_response_code(404);
+    echo "Contrôleur '$controllerName' introuvable.";
+}
