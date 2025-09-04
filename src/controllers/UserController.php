@@ -15,21 +15,6 @@ class UserController  extends Controller {
         $this->render('user/index', ['user' => $user]);
     }
 
-    
-    public function test()
-    {
-        $this->render('user/test');
-    }
-
-
-
-
-
-
-
-
-
-
 
     // Récupérer un user par ID
     public function show($id) {

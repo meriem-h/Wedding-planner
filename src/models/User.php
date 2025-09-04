@@ -5,6 +5,7 @@ class User extends Base {
         parent::__construct($db, "user");
     }
 
+    
     public function findByEmail($email) {
         $db = $this->conn->prepare("SELECT * FROM {$this->table} WHERE email = :email");
         $db->execute(["email" => $email]);

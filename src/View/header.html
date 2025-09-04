@@ -1,0 +1,11 @@
+
+
+    <h1>Wedding Planner</h1>
+
+    <?php if(isset($_SESSION['user_id'])): ?>
+        <nav>
+            <span>Bonjour, <?= htmlspecialchars($_SESSION['user_name']) ?></span>
+            <a href="/login/logout">Se déconnecter</a>
+        </nav>
+    <?php endif; ?>
+<hr>
